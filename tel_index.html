@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" >
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Telephone Number Detection</title>
+    <meta name = "viewport" content = "width=device-width">
+     <!-- Turn off telephone number detection. -->
+    <meta name = "format-detection" content = "telephone=no">
+</head>
+<body>
+     <!-- Then use phone links to explicitly create a link. -->
+     <p>A phone number: <a href="tel://+91 "> call here changes ff</a></p>
+     <br><br><br>
+     <p>Route to settings: <a href="App-prefs:General&path=About"> call here for settings</a></p>
+     
+     <!-- Otherwise, numbers that look like phone numbers are not links. -->
+     <p>Not a phone number: 408-555-5555</p>
+     <input type="button" onclick="redirect()" value="Redirect to about settings">
+</body>
+<script>
+    var redirect = function() {
+        window.location.href = "App-Prefs:root=General&path=About";
+    }
+</script>
+</html>
