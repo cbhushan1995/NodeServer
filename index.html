@@ -5,30 +5,26 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="style.css" />
     
     <script src='https://unpkg.com/tesseract.js@v2.0.0-alpha.13/dist/tesseract.min.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
+    <script src="./html5-qrcode.min.js"></script>
 </head>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js" />
-<script src="firebaseSetup.js"></script>
+
+
 <body style="margin: 10px;">
 
-<div id="qr-reader" style="margin: auto;
-  width: 80%;
-  border: 3px solid green;
-  padding: 10px;"></div>
+<div id="qr-reader" style="margin: auto; width: 80%; border: 3px solid green; padding: 10px;"></div>
 <div id="qr-reader-results"></div>
     
 
 
 </div>
 
-
-
-<script src="html5-qrcode.min.js"></script>
 
 <script>
 const qrReader = document.getElementById('qr-reader');
@@ -44,6 +40,10 @@ function onScanSuccess(decodedText, decodedResult) {
         if (decodedText == "D6A15DC6-67C5-49FC-8923-C754E25076FB1080113173") {
             // location.replace("./captureVideo.html")
             qrReader.innerHTML = "Please wait while we are redirecting to another page...."
+            window.writeDataToDB({"D6A15DC6-67C5-49FC-8923-C754E25076FB1080113173": {
+                "qrCodeVarified": true
+                }})
+
         }
     }
 }
@@ -100,6 +100,73 @@ html5QrcodeScanner.render(onScanSuccess);
 //      // Start failed, handle it. For example, 
 //      console.log(`Unable to start scanning, error: ${err}`);
 //  });
+
+
+
+  
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyBa3VGW81oLtDi3FAbro98DU8dX0odlfLM",
+    authDomain: "oneassistnonprod-app.firebaseapp.com",
+    databaseURL: "https://oneassistnonprod-app.firebaseio.com",
+    projectId: "oneassistnonprod-app",
+    storageBucket: "oneassistnonprod-app.appspot.com",
+    messagingSenderId: "687799930952",
+    appId: "1:687799930952:web:fd5712c1f4ef25200a087d",
+    measurementId: "G-DYBNLWJ1CC"
+  };
+
+ firebase.initializeApp(firebaseConfig)
+ // const mainDB = firebase.database().ref('SDTHashCodeData')
+ 
+ // var pushing = mainDB.push()
+ // console.log("----setting values")
+ // pushing.set({"xyz": "value1"})
+
+const dbRef = firebase.database().ref();
+
+// dbRef.child("SDTHashCodeData").child("iOS").on("value", function(snapshot) {
+//     console.log(snapshot.val());
+// }, function (error) {
+//     console.log("Error: " + error);
+// });
+
+const writeDataToDB = (data) => {
+    dbRef.child("IMEI_POC").set(data)
+}
+window.writeDataToDB = writeDataToDB
+window.dataRef = dbRef.child("IMEI_POC")
+
+// dbRef.child("SDTHashCodeData").child("iOS").get().then((snapshot) => {
+//   if (snapshot.exists()) {
+//     console.log(snapshot.val());
+//   } else {
+//     console.log("No data available");
+//   }
+// }).catch((error) => {
+//   console.error(error);
+// });
+
+
+// console.log("--------- ", mainDB)
+//  mainDB.child("iOS").get().then((snapshot) => {
+//   if (snapshot.exists()) {
+//     console.log(snapshot.val());
+//   } else {
+//     console.log("No data available");
+//   }
+// }).catch((error) => {
+//   console.error(error);
+// });
+
+
+
+
 
 </script>
 </body>
