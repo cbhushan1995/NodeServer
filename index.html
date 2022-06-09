@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
     <script src="./html5-qrcode.min.js"></script>
+    <script src="./firebaseSetup.js"></script>
 </head>
 
 
@@ -20,11 +21,6 @@
 
 <div id="qr-reader" style="margin: auto; width: 80%; border: 3px solid green; padding: 10px;"></div>
 <div id="qr-reader-results"></div>
-    
-
-
-</div>
-
 
 <script>
 const qrReader = document.getElementById('qr-reader');
@@ -43,131 +39,14 @@ function onScanSuccess(decodedText, decodedResult) {
             window.writeDataToDB({"D6A15DC6-67C5-49FC-8923-C754E25076FB1080113173": {
                 "qrCodeVarified": true
                 }})
-
+            location.replace("./captureVideo.html")
         }
     }
 }
 
-
 var html5QrcodeScanner = new Html5QrcodeScanner(
     "qr-reader", { fps: 10, qrbox: 250 });
 html5QrcodeScanner.render(onScanSuccess);
-
-// Html5Qrcode.getCameras().then(cameras => {
-//     alert('hi')
-//       /**
-//         * devices would be an array of objects of type:
-//         * { id: "id", label: "label" }
-//        */
-//        if (devices && devices.length) {
-//            let cameraLabel = devices[0].label;
-//            var cameraId = devices[0].id;
-//             // if (cameraLabel == "Back Camera") {
-//             //     var cameraId = devices[0].id;
-//             // }
-//         }
-//    }).catch(err => {
-//         // handle err   
-// });
-
-
-
-// const html5QrCode = new Html5Qrcode("reader");
-// html5QrCode.start(
-//    cameraId, // retreived in the previous step.
-//    {
-//       fps: 10,    // sets the framerate to 10 frame per second 
-//       qrbox: 250  // sets only 250 X 250 region of viewfinder to
-//                   // scannable, rest shaded.
-//  },
-//  qrCodeMessage => {
-//      // do something when code is read. For example:
-//      console.log(`QR Code detected: ${qrCodeMessage}`);
-//      html5QrCode.stop().then(ignore => {
-//         // QR Code scanning is stopped. 
-//         console.log("QR Code scanning stopped.");
-//         // location.replace("./captureVideo.html")
-//     }).catch(err => { 
-//         // Stop failed, handle it. 
-//         console.log("Unable to stop scanning.");
-//     });
-//  },
-//  errorMessage => {
-//      // parse error, ideally ignore it. For example:
-//      console.log(`QR Code no longer in front of camera.`);
-//  })
-//  .catch(err => {
-//      // Start failed, handle it. For example, 
-//      console.log(`Unable to start scanning, error: ${err}`);
-//  });
-
-
-
-  
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  
-  const firebaseConfig = {
-    apiKey: "AIzaSyBa3VGW81oLtDi3FAbro98DU8dX0odlfLM",
-    authDomain: "oneassistnonprod-app.firebaseapp.com",
-    databaseURL: "https://oneassistnonprod-app.firebaseio.com",
-    projectId: "oneassistnonprod-app",
-    storageBucket: "oneassistnonprod-app.appspot.com",
-    messagingSenderId: "687799930952",
-    appId: "1:687799930952:web:fd5712c1f4ef25200a087d",
-    measurementId: "G-DYBNLWJ1CC"
-  };
-
- firebase.initializeApp(firebaseConfig)
- // const mainDB = firebase.database().ref('SDTHashCodeData')
- 
- // var pushing = mainDB.push()
- // console.log("----setting values")
- // pushing.set({"xyz": "value1"})
-
-const dbRef = firebase.database().ref();
-
-// dbRef.child("SDTHashCodeData").child("iOS").on("value", function(snapshot) {
-//     console.log(snapshot.val());
-// }, function (error) {
-//     console.log("Error: " + error);
-// });
-
-const writeDataToDB = (data) => {
-    dbRef.child("IMEI_POC").set(data)
-}
-window.writeDataToDB = writeDataToDB
-window.dataRef = dbRef.child("IMEI_POC")
-
-// dbRef.child("SDTHashCodeData").child("iOS").get().then((snapshot) => {
-//   if (snapshot.exists()) {
-//     console.log(snapshot.val());
-//   } else {
-//     console.log("No data available");
-//   }
-// }).catch((error) => {
-//   console.error(error);
-// });
-
-
-// console.log("--------- ", mainDB)
-//  mainDB.child("iOS").get().then((snapshot) => {
-//   if (snapshot.exists()) {
-//     console.log(snapshot.val());
-//   } else {
-//     console.log("No data available");
-//   }
-// }).catch((error) => {
-//   console.error(error);
-// });
-
-
-
-
-
 </script>
 </body>
 </html>
