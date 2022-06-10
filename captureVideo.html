@@ -9,29 +9,44 @@
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
     <script src='https://unpkg.com/tesseract.js@v2.0.0-alpha.13/dist/tesseract.min.js'></script>
+    <Script>
+        function resizeCanvas(element) {
+            var w = element.offsetWidth;
+            var h = element.offsetHeight;
+            var cv = document.getElementById("canvas");
+            cv.width = w;
+            cv.height =h;
+            alert(`heigth: ${h} width ${w}`)
+        }
+
+    </Script>
+
 </head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 <body>
 <div class="display-cover">
-    <video autoplay>   
+    <canvas id="canvas" style="position: absolute; left: 0;top: 0;z-index: 10;"></canvas>
+    <video autoplay onPlay="resizeCanvas(this)" style=" width: 100%;height: auto;position: absolute;top: 0;left: 0;">
     </video>
-    <canvas class="d-none"></canvas>
+
+
     <img class="screenshot-image d-none" alt="">
     <div class="controls">
         <button class="btn btn-info pause d-none" title="Pause">Stop</button>
     </div>
-    
+
     <div class="alertsContainer">
-        
+
     </div>
 
-    <div class="previewButtons">
+    <div class="previewButtons d-none">
         <button type="button" class="upload btn btn-primary">Upload</button>
         <button type="button" class="retake btn btn-danger">Retake</button>
     </div>
 </div>
 <script src="https://unpkg.com/feather-icons"></script>
 <script src="script.js"></script>
+
 </body>
 </html>

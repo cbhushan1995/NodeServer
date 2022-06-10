@@ -33,14 +33,33 @@ function onScanSuccess(decodedText, decodedResult) {
         lastResult = decodedText;
         // Handle on success condition with the decoded message.
         console.log(`Scan result ${decodedText}`, decodedResult);
-        if (decodedText == "D6A15DC6-67C5-49FC-8923-C754E25076FB1080113173") {
-            // location.replace("./captureVideo.html")
-            qrReader.innerHTML = "Please wait while we are redirecting to another page...."
-            window.writeDataToDB({"D6A15DC6-67C5-49FC-8923-C754E25076FB1080113173": {
-                "qrCodeVarified": true
-                }})
-            location.replace("./captureVideo.html")
-        }
+        window.readAllIMEIData().then((objects)=>{
+            // objects.filter(()=>{})
+            objects.forEach(function(childSnapshot) {
+                console.log("key   ---  ", decodedResult.decodedText, childSnapshot.key, childSnapshot.key == decodedResult.decodedText)
+                if (childSnapshot.key == decodedResult.decodedText) {
+                        qrReader.innerHTML = "Please wait while we are redirecting to another page...."
+                        childSnapshot[childSnapshot.key] = {
+                            "qrCodeVarified": true
+                        }
+                        let obj = {}
+                        obj[`IMEI_POC/${decodedResult.decodedText}`] = {
+                            "qrCodeVarified": true
+                        }
+                        window.updateData(obj)
+                        window.localStorage.setItem('deviceID', childSnapshot.key);
+                        location.replace("./captureVideo.html")
+                }
+            });
+        })
+        // if (decodedText == "D6A15DC6-67C5-49FC-8923-C754E25076FB_1080113173") {
+
+        //     qrReader.innerHTML = "Please wait while we are redirecting to another page...."
+        //     window.writeDataToDB({"D6A15DC6-67C5-49FC-8923-C754E25076FB1080113173": {
+        //         "qrCodeVarified": true
+        //         }})
+        //     location.replace("./captureVideo.html")
+        // }
     }
 }
 

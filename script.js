@@ -10,6 +10,7 @@ const previewButtons = document.querySelector('.previewButtons')
 const uploadButton = document.querySelector('.upload')
 const retakeButton = document.querySelector('.retake')
 
+
 let streamStarted = false;
 let cameraValue = null
 const [pause] = buttons;
@@ -18,31 +19,35 @@ let blobs_recorded = [];
 let camera_stream = null
 let alertTimer = null
 
-// const constraints = {
-//   audio: false,
-//   video: {
-//     width: {
-//       min: 1280,
-//       ideal: 1920,
-//       max: 2560,
-//     },
-//     height: {
-//       min: 720,
-//       ideal: 1080,
-//       max: 1440
-//     },
-//     facingMode: 'environment', // Or 'user'
-//   }
-// };
-
-var constraints = {
+const constraints = {
+  audio: false,
   video: {
-    width: { min: 320, ideal: 320 },
-    height: { min: 240 },
-    frameRate: 60,
-    facingMode: "environment",
+    width: {
+      min: 1280,
+      ideal: 1920,
+      max: 2560,
+    },
+    height: {
+      min: 720,
+      ideal: 1080,
+      max: 1440
+    },
+    facingMode: 'environment', // Or 'user'
   }
 };
+
+// var constraints = {
+//   audio: false,
+//   video: {
+//     // width: { min: 320, ideal: 320 },
+//     // height: { min: 240 },
+//     // frameRate: 60,
+//     // facingMode: "environment",
+//     aspectRatio: {
+//       exact: 16 / 9
+//     }
+//   }
+// };
 
 
 const showAlertMessage = (message, isSuccess) => {
@@ -54,11 +59,23 @@ const showAlertMessage = (message, isSuccess) => {
     </div>`
   clearTimeout(alertTimer)
   alertTimer = setTimeout(() => {
-      alertsContainer.innerHTML = ''
-      clearTimeout(alertTimer)
+    alertsContainer.innerHTML = ''
+    clearTimeout(alertTimer)
   },8000)
 }
 
+const draw = () => {
+  if (canvas.getContext) {
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    ctx.font = "12px Arial";
+    ctx.fillText(Date(), 10, 50);
+  }
+}
+
+setInterval(function() { draw(); }, 50);
+
+// draw()
 
 const startStreaming = () => {
   if (streamStarted) {
@@ -99,24 +116,23 @@ const startStream = async (constraints) => {
 
 const recordingVideo = () => {
   // set MIME type of recording as video/webm
-    media_recorder = new MediaRecorder(camera_stream, { mimeType: 'video/webm' });
+  media_recorder = new MediaRecorder(canvas.captureStream(), {   mimeType: 'video/webm;codecs=h264',
+    audioBitsPerSecond : 128000,
+    videoBitsPerSecond : 2500000 });
 
-    // event : new recorded video blob available 
-    media_recorder.addEventListener('dataavailable', function(e) {
+  // event : new recorded video blob available
+  media_recorder.addEventListener('dataavailable', function(e) {
+    // write water mark timestamp on frame then save
     blobs_recorded.push(e.data);
-    });
+  });
 
-    // event : recording stopped & all blobs sent
-    media_recorder.addEventListener('stop', function() {
-      // create local object URL from the recorded video blobs
-      let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/mp4' }));
-      //download_link.href = video_local;
-      // uploadVideo();
-      showPreview()
-    });
+  // event : recording stopped & all blobs sent
+  media_recorder.addEventListener('stop', function() {
+    showPreview()
+  });
 
-    // start recording with each recorded blob having 1 second video
-    media_recorder.start(1000);
+  // start recording with each recorded blob having 1 second video
+  media_recorder.start(1000);
 }
 
 
@@ -138,10 +154,11 @@ const getCameraSelection = async () => {
 
 
 const uploadVideo = () => {
+  previewButtons.classList.add('d-none');
   var formData = new FormData();
-  formData.append('userVideo.mp4', new Blob(blobs_recorded, {type: 'video/mp4'}));
+  formData.append('userVideo', new Blob(blobs_recorded, {type: 'video/webm'}));
   showAlertMessage("Please wait while uploading video",false)
-  fetch('http://192.168.18.13:3000/upload-avatar',{
+  fetch('http://192.168.179.13:3000/upload-avatar',{
     method: "POST",
     body: formData
   }).then((res)=> {
@@ -157,9 +174,9 @@ const uploadVideo = () => {
 
 function toggleControls() {
   if (video.hasAttribute("controls")) {
-     video.removeAttribute("controls")   
+    video.removeAttribute("controls")
   } else {
-     video.setAttribute("controls","controls")   
+    video.setAttribute("controls","controls")
   }
 }
 
@@ -182,9 +199,18 @@ const retakeProcess = () => {
   startStreaming();
 }
 
+video.addEventListener('loadedmetadata', function() {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  // alert(`height ${video.videoHeight} width ${video.videoWidth}`)
+});
+
+// video.addEventListener('play', );
+
+
 pause.onclick = pauseStream;
 uploadButton.onclick = uploadVideo
 retakeButton.onclick = retakeProcess
-previewButtons.classList.add('d-none');
+
 getCameraSelection();
 startStreaming();
