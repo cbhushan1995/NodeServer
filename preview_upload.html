@@ -1,0 +1,66 @@
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+    <script src="jquery.json.js"></script>
+    <style>
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: table
+        }
+
+        div {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle
+        }
+
+        input[type=submit] {
+            height: 100px;
+            width: 200px;
+            padding: 5px 15px;
+            background: #ccc;
+            font-size: 32px;
+            font-weight: bold;
+            border: 0 none;
+            cursor: pointer;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+    </style>
+ <script>
+    $(document).ready(function () {
+        let video = document.getElementById("video")
+        let source = document.getElementById("videoSource")
+        source.setAttribute('src', "http://127.0.0.1:3000/uploads/"+window.localStorage.getItem("file"));
+        source.setAttribute('type', 'video/mp4');
+        video.appendChild(source);
+        video.play();
+    });
+
+    function navigateToStart() {
+        location.href = "./startFlow.html";
+    }
+</script>
+
+</head>
+
+<body>
+    <div>
+        <video width="100%" height="auto" controls id="video">
+            <source src="movie.mp4" type="video/mp4" id="videoSource">
+            Your browser does not support the video tag.
+        </video>
+        </br></br></br></br></br></br>
+        <button type="submit" title="Upload View" style="height: 48px; width: 300px" onclick="navigateToStart()"> Retake </button>
+    </div>
+   
+</body>
+
+</html>

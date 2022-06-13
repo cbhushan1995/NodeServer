@@ -22,16 +22,16 @@ let alertTimer = null
 const constraints = {
   audio: false,
   video: {
-    width: {
-      min: 1280,
-      ideal: 1920,
-      max: 2560,
-    },
-    height: {
-      min: 720,
-      ideal: 1080,
-      max: 1440
-    },
+    // width: {
+    //   min: 1280,
+    //   ideal: 1920,
+    //   max: 2560,
+    // },
+    // height: {
+    //   min: 720,
+    //   ideal: 1080,
+    //   max: 1440
+    // },
     facingMode: 'environment', // Or 'user'
   }
 };
@@ -68,8 +68,18 @@ const draw = () => {
   if (canvas.getContext) {
     var ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0);
-    ctx.font = "12px Arial";
-    ctx.fillText(Date(), 10, 50);
+    ctx.font = "20px Arial";
+    ctx.canvas.height = video.clientHeight
+    ctx.canvas.width = video.clientWidth
+    let bash64 = btoa(window.localStorage.getItem('deviceID') ?? "")
+    // for decoding bash64 string atob(bash64)
+    let halfIndex = parseInt((bash64.length)/2) + 1
+    var lineheight = 16;
+    let finalBash64 = bash64.slice(0, halfIndex) + "\n" + bash64.slice(halfIndex)
+    let lines = finalBash64.split('\n');
+    for (var j = 0; j<lines.length; j++)
+      ctx.fillText(lines[j], 10, 50 + (j*lineheight) );
+    // ctx.fillText(finalBash64, 10, 50);
   }
 }
 
@@ -100,14 +110,6 @@ const pauseStream = () => {
   pause.classList.add('d-none');
 };
 
-const doScreenshot = () => {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext('2d').drawImage(video, 0, 0);
-  // screenshotImage.src = canvas.toDataURL('image/webp');
-  // screenshotImage.classList.remove('d-none');
-};
-
 
 const startStream = async (constraints) => {
   const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -116,14 +118,13 @@ const startStream = async (constraints) => {
 
 const recordingVideo = () => {
   // set MIME type of recording as video/webm
-  media_recorder = new MediaRecorder(canvas.captureStream(), {   mimeType: 'video/webm;codecs=h264',
-    audioBitsPerSecond : 128000,
-    videoBitsPerSecond : 2500000 });
+  media_recorder = new MediaRecorder(canvas.captureStream(), {   mimeType: 'video/webm'});
 
   // event : new recorded video blob available
   media_recorder.addEventListener('dataavailable', function(e) {
     // write water mark timestamp on frame then save
-    blobs_recorded.push(e.data);
+    // blobs_recorded.push(e.data);
+
   });
 
   // event : recording stopped & all blobs sent
@@ -181,6 +182,7 @@ function toggleControls() {
 }
 
 const showPreview = () => {
+  canvas.classList.add('d-none');
   camera_stream.getTracks().forEach(track => track.stop());
   video.srcObject = null
   let previewVideo = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/mp4' }));
@@ -195,6 +197,7 @@ const retakeProcess = () => {
   video.src = null
   blobs_recorded = []
   previewButtons.classList.add('d-none');
+  canvas.classList.remove('d-none');
   toggleControls()
   startStreaming();
 }

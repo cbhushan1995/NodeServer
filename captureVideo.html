@@ -1,52 +1,73 @@
-<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-    <title>Document</title>
-    <script src='https://unpkg.com/tesseract.js@v2.0.0-alpha.13/dist/tesseract.min.js'></script>
-    <Script>
-        function resizeCanvas(element) {
-            var w = element.offsetWidth;
-            var h = element.offsetHeight;
-            var cv = document.getElementById("canvas");
-            cv.width = w;
-            cv.height =h;
-            alert(`heigth: ${h} width ${w}`)
+    <meta HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8" />
+    <script src='https://unpkg.com/tesseract.js@2.1.5/dist/tesseract.min.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+
+    <script src="jquery.json.js"></script>
+
+
+    <style>
+        body {
+            margin: 0;
+            /* Because annoying default browser margins */
         }
 
-    </Script>
+        video {
+            position: absolute;
 
-</head>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+
+            z-index: 4;
+            visibility: visible;
+        }
+
+        canvas {
+            position: absolute;
+
+            left: 10;
+            z-index: 10;
+
+            width: 100%;
+            height: auto;
+
+        }
+
+        button {
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            border-radius: 100%;
+            font-size: 16;
+            font-weight: bold;
+
+
+        }
+    </style>
+
 <body>
-<div class="display-cover">
-    <canvas id="canvas" style="position: absolute; left: 0;top: 0;z-index: 10;"></canvas>
-    <video autoplay onPlay="resizeCanvas(this)" style=" width: 100%;height: auto;position: absolute;top: 0;left: 0;">
-    </video>
-
-
-    <img class="screenshot-image d-none" alt="">
-    <div class="controls">
-        <button class="btn btn-info pause d-none" title="Pause">Stop</button>
+    <img id="imageele" src="" style="max-width: 400px; max-height: 200px;">
+    <div>
+        <button type="button" id="previewBtn">Stop</button>
     </div>
+    <div style="height:100%;display: flex;
+justify-content: center;">
+        <div style="background-color: aqua; display: flex;  
+    justify-content: center;
+    align-items: center;">
 
-    <div class="alertsContainer">
+            <canvas></canvas>
+            <video autoplay></video>
+
+
+        </div>
 
     </div>
-
-    <div class="previewButtons d-none">
-        <button type="button" class="upload btn btn-primary">Upload</button>
-        <button type="button" class="retake btn btn-danger">Retake</button>
-    </div>
-</div>
-<script src="https://unpkg.com/feather-icons"></script>
-<script src="script.js"></script>
-
+    <script src="video_handling.js"></script>
 </body>
+
 </html>

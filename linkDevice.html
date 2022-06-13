@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    
+    <script src='https://unpkg.com/tesseract.js@2.1.5/dist/tesseract.min.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
+    <script src="./html5-qrcode.min.js"></script>
+    <script src="./firebaseSetup.js"></script>
+</head>
+
+
+<body style="margin: 10px;">
+
+<div id="qr-reader" style="margin: auto; width: 80%; border: 3px solid green; padding: 10px;"></div>
+<div id="qr-reader-results"></div>
+
+<script>
+const qrReader = document.getElementById('qr-reader');
+var resultContainer = document.getElementById('qr-reader-results');
+var lastResult, countResults = 0;
+
+function onScanSuccess(decodedText, decodedResult) {
+    if (decodedText !== lastResult) {
+        ++countResults;
+        lastResult = decodedText;
+        // Handle on success condition with the decoded message.
+        console.log(`Scan result ${decodedText}`, decodedResult);
+        window.readAllIMEIData().then((objects)=>{
+            // objects.filter(()=>{})
+            objects.forEach(function(childSnapshot) {
+                console.log("key   ---  ", decodedResult.decodedText, childSnapshot.key, childSnapshot.key == decodedResult.decodedText)
+                if (childSnapshot.key == decodedResult.decodedText) {
+                        qrReader.innerHTML = "Please wait while we are redirecting to another page...."
+                        childSnapshot[childSnapshot.key] = {
+                            "qrCodeVarified": true
+                        }
+                        let obj = {}
+                        obj[`IMEI_POC/${decodedResult.decodedText}`] = {
+                            "qrCodeVarified": true
+                        }
+                        window.updateData(obj)
+                        window.localStorage.setItem('deviceID', childSnapshot.key);
+                        location.replace("./captureVideo.html")
+                }
+            });
+        })
+        // if (decodedText == "D6A15DC6-67C5-49FC-8923-C754E25076FB_1080113173") {
+
+        //     qrReader.innerHTML = "Please wait while we are redirecting to another page...."
+        //     window.writeDataToDB({"D6A15DC6-67C5-49FC-8923-C754E25076FB1080113173": {
+        //         "qrCodeVarified": true
+        //         }})
+        //     location.replace("./captureVideo.html")
+        // }
+    }
+}
+
+var html5QrcodeScanner = new Html5QrcodeScanner(
+    "qr-reader", { fps: 10, qrbox: 250 });
+html5QrcodeScanner.render(onScanSuccess);
+</script>
+</body>
+</html>
